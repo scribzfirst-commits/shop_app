@@ -1,0 +1,167 @@
+<div class="container mt-5">
+  <div class="d-flex align-items-center mb-4">
+    <%= link_to raw('<i class="bi bi-arrow-left me-2"></i> Back'), 
+          "javascript:history.back()", 
+          class: "btn btn-back rounded-pill px-4 me-3" %>
+    <h1 class="fw-bold text-primary text-center flex-grow-1 m-0">🛒 Your Shopping Cart</h1>
+  </div>
+
+  <% if @cart_items.any? %>
+    <div class="table-responsive shadow rounded-4 overflow-hidden">
+      <table class="table table-striped align-middle mb-0" id="cart-table">
+        <thead class="table-primary">
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cart_items.each do |item| %>
+            <tr data-price="<%= item.product.price %>" data-product-id="<%= item.product.id %>">
+
+              <td class="fw-semibold"><%= item.product.name %></td>
+              <td class="text-success fw-bold">₹<%= item.product.price %></td>
+
+              <td>
+            <div class="btn-group" role="group" aria-label="Quantity selector">
+              <button type="button" class="btn btn-outline-primary btn-sm btn-decrease">−</button>
+              <input type="number" class="form-control form-control-sm text-center quantity-input" 
+                    value="<%= item.quantity %>" min="1" max="10"
+                    style="width: 60px; border-radius: 0;">
+              <button type="button" class="btn btn-outline-primary btn-sm btn-increase">+</button>
+            </div>
+          </td>
+
+              <td class="fw-bold row-total">₹<%= item.quantity * item.product.price %></td>
+              <td class="text-center">
+                <%= button_to "Remove",
+                      remove_from_cart_path(item.product),
+                      method: :post,
+                      class: "btn btn-outline-danger btn-sm rounded-pill px-3" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="mt-4 p-4 border rounded-4 shadow-sm bg-light">
+      <h5 class="fw-bold">Cart Summary</h5>
+      <p class="mb-2">Total Items: <span id="total-items"><%= @cart_items.sum(&:quantity) %></span></p>
+      <p class="fw-bold fs-5">
+        Grand Total: 
+        <span class="text-success" id="grand-total">
+          ₹<%= @cart_items.sum { |i| i.quantity * i.product.price } %>
+        </span>
+      </p>
+
+      <%= form_with url: orders_path, method: :post do |f| %>
+     <input type="hidden" name="grand_total" id="grand-total-input" value="<%= @cart_items.sum { |i| i.quantity * i.product.price } %>">
+
+      <%= f.submit "Proceed to Payment", class: "btn btn-primary rounded-pill px-4 mt-2" %>
+      <% end %>
+      </div>
+      <% else %>
+    <div class="text-center mt-5">
+      <h4 class="text-muted">Your cart is empty</h4>
+      <%= link_to "Shop Now", products_path, class: "btn btn-outline-primary rounded-pill mt-3 px-4" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+  const table = document.getElementById("cart-table");
+  const grandTotalEl = document.getElementById("grand-total");
+  const totalItemsEl = document.getElementById("total-items");
+
+  function floorTo2(num) {
+    return Math.floor(num * 100) / 100;
+  }
+
+  function updateTotals() {
+    let grandTotal = 0;
+    let totalItems = 0;
+
+    table.querySelectorAll("tbody tr").forEach(row => {
+      const price = parseFloat(row.dataset.price);
+      const qtyInput = row.querySelector(".quantity-input");
+      let qty = parseInt(qtyInput.value) || 1;
+
+      const rowTotal = floorTo2(price * qty);
+      row.querySelector(".row-total").textContent = `₹${rowTotal.toFixed(2)}`;
+
+      grandTotal += rowTotal;
+      totalItems += qty;
+    });
+
+    grandTotalEl.textContent = `₹${floorTo2(grandTotal).toFixed(2)}`;
+    totalItemsEl.textContent = totalItems;
+    document.getElementById("grand-total-input").value = floorTo2(grandTotal);
+  }
+
+  // Quantity button click
+  table.addEventListener("click", e => {
+
+  if (e.target.classList.contains("btn-decrease") || e.target.classList.contains("btn-increase")) {
+  const row = e.target.closest("tr");
+  const input = row.querySelector(".quantity-input");
+  let currentVal = parseInt(input.value) || 1;
+
+  if (e.target.classList.contains("btn-decrease") && currentVal > 1) {
+    input.value = currentVal - 1;
+  }
+  if (e.target.classList.contains("btn-increase") && currentVal < 10) {
+    input.value = currentVal + 1;
+  }
+  updateTotals();
+  saveQuantity(row.dataset.productId, input.value);
+  }
+
+  });
+
+  // Manual input change
+  table.addEventListener("input", e => {
+    if (e.target.classList.contains("quantity-input")) {
+  const row = e.target.closest("tr");
+  let val = parseInt(e.target.value);
+  if (val < 1) e.target.value = 1;
+  if (val > 10) e.target.value = 10;
+  updateTotals();
+  saveQuantity(row.dataset.productId, e.target.value);
+  }
+
+  });
+
+  updateTotals();
+});
+
+
+function saveQuantity(productId, qty) {
+  fetch(`/cart_items/${productId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+    },
+    body: JSON.stringify({ quantity: qty })
+  });
+}
+
+table.addEventListener("input", e => {
+  if (e.target.classList.contains("quantity-input")) {
+    let val = parseInt(e.target.value);
+    if (val < 1) e.target.value = 1;
+    if (val > 10) e.target.value = 10;
+    updateTotals();
+    const productId = e.target.closest("tr").dataset.productId;
+    saveQuantity(productId, e.target.value);
+  }
+});
+
+
+</script>

@@ -1,0 +1,38 @@
+<div class="container text-center mt-5 position-relative" style="height: 350px;">
+  <!-- Congratulations text -->
+  <h1 class="text-success fw-bold position-absolute top-50 start-50 translate-middle"
+      style="z-index: 1; opacity: 0.9;">
+    🎉 Congrats! Your order has been placed
+  </h1>
+
+  <!-- Confetti GIF -->
+  <div id="confetti-container" style="width: 100%; overflow: hidden; display: flex; justify-content: center; position: absolute; top: 0; left: 0; z-index: 0;">
+    <img src="https://media.tenor.com/nVsVEfzCGQMAAAAi/confetti.gif"
+         alt="Confetti Celebration"
+         style="width: 80%; height: auto;">
+  </div>
+</div>
+
+<br>
+
+<!-- Button below -->
+<div class="text-center mt-5">
+  <%= link_to "Show My Orders", orderhistory_orders_path, 
+      class: "btn btn-primary btn-lg px-4" %>
+</div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const confetti = document.getElementById("confetti-container");
+
+    // Wait for the GIF duration before starting fade-out
+    setTimeout(function() {
+      if (confetti) {
+        confetti.classList.add("fade-out");
+        // Remove from DOM after fade animation finishes
+        setTimeout(() => confetti.remove(), 1000);
+      }
+    }, 3000); // Adjust for your GIF duration
+  });
+</script>

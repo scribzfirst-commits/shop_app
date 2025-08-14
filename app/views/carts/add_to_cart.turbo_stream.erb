@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "cart-count" do %>
+  <%= render "shared/cart_count", count: current_cart.total_items %>
+<% end %>

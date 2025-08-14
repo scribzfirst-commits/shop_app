@@ -1,0 +1,68 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Back button -->
+    <%= link_to raw('<i class="bi bi-arrow-left me-2"></i> Back'), 
+      "javascript:history.back()", 
+      class: "btn btn-back rounded-pill px-4 me-3" %>
+
+    <!-- Centered title -->
+    <h1 class="fw-bold text-primary m-0 flex-grow-1 text-center">📜 Order History</h1>
+
+    <!-- Placeholder for spacing alignment -->
+    <div style="width:120px;"></div>
+  </div>
+
+  <% if @orders.present? %>
+    <div class="table-responsive shadow rounded-4 overflow-hidden">
+      <table class="table table-striped align-middle mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col">Order ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Total</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td><%= order.id %></td>
+              <td><%= order.created_at.strftime("%d %b %Y") %></td>
+              <td>₹<%= sprintf('%.2f', order.total_price) %></td>
+              <td>
+                <% if order.status == "paid" %>
+                  <span class="badge bg-success">Paid</span>
+                <% else %>
+                  <span class="badge bg-warning text-dark"><%= (order.status || "pending").capitalize %></span>
+                <% end %>
+              </td>
+              <td class="text-center">
+                <%= link_to "View", order_path(order), class: "btn btn-sm btn-outline-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      You have no past orders yet.
+    </div>
+  <% end %>
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-center align-items-center gap-4 mt-5">
+  <%= link_to '‹ Previous',
+              url_for(page: @orders.prev_page || 1),
+              class: "btn btn-outline-primary btn-sm #{'disabled' unless @orders.prev_page}" %>
+
+  <span class="mx-2 text-muted">
+    Page <%= @orders.current_page %> of <%= @orders.total_pages %>
+  </span>
+
+  <%= link_to 'Next ›',
+              url_for(page: @orders.next_page || @orders.total_pages),
+              class: "btn btn-outline-primary btn-sm #{'disabled' unless @orders.next_page}" %>
+</div>
