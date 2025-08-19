@@ -1,0 +1,35 @@
+test:
+  client_id: EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM
+  client_secret: EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM
+  mode: sandbox
+  app_id: APP-80W284485P519543T
+  username: jb-us-seller_api1.paypal.com
+  password: WX4WTU3S8MY44S7F
+  signature: AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy
+  sandbox_email_address: Platform.sdk.seller@gmail.com
+  ssl_options:
+    ca_file: "/etc/ssl/certs/ca-certificates.crt"
+
+development:
+  client_id: EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM
+  client_secret: EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM
+  mode: sandbox
+  app_id: APP-80W284485P519543T
+  username: jb-us-seller_api1.paypal.com
+  password: WX4WTU3S8MY44S7F
+  signature: AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy
+  sandbox_email_address: Platform.sdk.seller@gmail.com
+  ssl_options:
+    ca_file: "/etc/ssl/certs/ca-certificates.crt"
+
+production:
+  client_id: EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM
+  client_secret: EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM
+  mode: live
+  app_id: APP-80W284485P519543T
+  username: jb-us-seller_api1.paypal.com
+  password: WX4WTU3S8MY44S7F
+  signature: AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy
+  sandbox_email_address: Platform.sdk.seller@gmail.com
+  ssl_options:
+    ca_file: "/etc/ssl/certs/ca-certificates.crt"

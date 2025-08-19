@@ -8,5 +8,8 @@ class Order < ApplicationRecord
     save!
   end
 
+   def total_for_payment
+    total_price.round(2).to_s
+  end
   
 end

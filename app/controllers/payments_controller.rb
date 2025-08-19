@@ -21,6 +21,36 @@ class PaymentsController < ApplicationController
 
   end
   
+  def create
+    order = Order.find(params[:order_id])
+    return redirect_to root_path, alert: "Order not found" unless order
+
+    payment = PayPal::SDK::REST::Payment.new({
+      intent: "sale",
+      payer: { payment_method: "paypal" },
+      transactions: [{
+        amount: {
+          total: order.total_for_payment,   # FIXED here
+          currency: "USD"
+        },
+        description: "Order ##{order.id} Payment"
+      }],
+      redirect_urls: {
+        return_url: complete_payments_url(order_id: order.id),
+        cancel_url: root_url
+      }
+    })
+
+    if payment.create
+    approval_url = payment.links.find { |v| v.rel == "approval_url" }.href
+     redirect_to approval_url, allow_other_host: true
+    else
+     redirect_to root_path, alert: "Error creating PayPal payment: #{payment.error.inspect}"
+    end
+
+  end
+
+
 
   def placeorder
 

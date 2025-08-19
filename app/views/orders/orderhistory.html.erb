@@ -38,7 +38,14 @@
                 <% end %>
               </td>
               <td class="text-center">
+                <div class="d-flex justify-content-center gap-2">
                 <%= link_to "View", order_path(order), class: "btn btn-sm btn-outline-primary" %>
+                <%= button_to "Delete",
+                    order_path(order),
+                    method: :delete,
+                    data: { confirm: "Are you sure you want to delete this order?" },
+                    class: "btn btn-sm btn-outline-danger" %>
+                </div>
               </td>
             </tr>
           <% end %>

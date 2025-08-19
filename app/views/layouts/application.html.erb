@@ -19,13 +19,13 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" %>
     
+
   </head>
 
   <body>
@@ -45,6 +45,9 @@
   <% end %>
 </div>
 
+    <script
+    src='https://cdn.jotfor.ms/agent/embedjs/0198a6e87526730287d8a1ee2869cea957c8/embed.js?skipWelcome=1&maximizable=1'>
+    </script>
  
   <%= yield %>
 
@@ -53,13 +56,9 @@
   </body>
 </html>
 
-  <script
-    src='https://cdn.jotfor.ms/agent/embedjs/0198a6e87526730287d8a1ee2869cea957c8/embed.js?skipWelcome=1&maximizable=1'>
-  </script>
-
 
 <script>
-  document.addEventListener("turbo:load", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     const flash = document.getElementById("flash-message");
     if (flash) {
       setTimeout(() => {

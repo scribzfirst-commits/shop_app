@@ -15,21 +15,23 @@ Rails.application.routes.draw do
     post "remove/:product_id", to: "carts#remove", as: :remove_from
   end
 
-  resources :orders, only: [:new, :create, :show] do
+  resources :orders, only: [:new, :create, :show, :destroy] do
     member do
       get :payment
       post :complete_payment
       get :placeorder
+      get :invoice
+    
     end
     collection do
       get :orderhistory
     end
   end
 
-  resources :payments, only: [] do
-    collection do
-      post :complete
-      get :placeorder
-    end
+  resources :payments, only: [:create] do
+  collection do
+    get :complete
+    get :placeorder
   end
+end
 end

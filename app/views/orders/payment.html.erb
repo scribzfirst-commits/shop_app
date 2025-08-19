@@ -35,10 +35,8 @@
 
           <!-- Buttons -->
           <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-            <%= button_to "Payment Completed",
-              complete_payments_path(order_id: @order.id),
-              method: :post,
-              class: "btn btn-success rounded-pill px-4 py-2" %>
+            <%= button_to "Pay with PayPal", payments_path(order_id: @order.id), method: :post, class: "btn btn-primary" %>
+
             <%= link_to "Cancel", cart_path, class: "btn btn-outline-danger rounded-pill px-4 py-2" %>
           </div>
 

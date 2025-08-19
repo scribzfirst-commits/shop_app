@@ -1,2 +1,133 @@
-<h1>Orders#show</h1>
-<p></p>
+<div class="container mt-5">
+  <!-- Header row with back button and title -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Back button -->
+    <%= link_to raw('<i class="bi bi-arrow-left me-2"></i> Back'), 
+      "javascript:history.back()", 
+      class: "btn btn-back rounded-pill px-4 me-3" %>
+
+    <!-- Title centered -->
+    <h2 class="fw-bold text-primary m-0 flex-grow-1 text-center">🧾 Order Receipt</h2>
+
+    <!-- Placeholder for spacing -->
+    <div style="width:120px;"></div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Invoice Card -->
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+
+          <!-- Order Info -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="text-muted">Order ID: <%= @order.id %></span>
+            <span class="text-muted"><%= @order.created_at.strftime("%d %b %Y") %></span>
+          </div>
+
+          <hr>
+
+          <!-- Status & Total -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <strong>Status:</strong>
+              <% if @order.status == "paid" %>
+                <span class="badge bg-success">Paid</span>
+              <% else %>
+                <span class="badge bg-warning text-dark"><%= (@order.status || "pending").capitalize %></span>
+                <%= link_to "Pay Now", payment_order_path(@order), class: "btn btn-primary btn-sm ms-2 pulse-btn" %>
+              <% end %>
+            </div>
+            <h4 class="fw-bold text-success mb-0">Total: ₹ <%= sprintf('%.2f', @order.total_price) %></h4>
+          </div>
+
+          <!-- Order Items Table -->
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Product</th>
+                  <th class="text-end">Price</th>
+                  <th class="text-center">Quantity</th>
+                  <th class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @order.order_items.each do |item| %>
+                  <tr>
+                    <td><%= item.product&.name || "Deleted Product" %></td>
+                    <td class="text-end">₹<%= sprintf('%.2f', item.price) %></td>
+                    <td class="text-center"><%= item.quantity %></td>
+                    <td class="text-end">₹<%= sprintf('%.2f', item.price * item.quantity) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr class="fw-bold">
+                  <td colspan="3" class="text-end">Grand Total</td>
+                  <td class="text-end text-success">₹<%= sprintf('%.2f', @order.total_price) %></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Footer Note -->
+          <div class="text-center mt-4">
+            <p class="text-muted small mb-0">Thank you for shopping with us 🙏</p>
+            <p class="text-muted small">This is a computer-generated receipt.</p>
+          </div>
+
+          <!-- Download Invoice Button (only if paid) -->
+          <% if @order.status == "paid" %>
+            <div class="text-center mt-4">
+              <%= link_to invoice_order_path(@order, format: :pdf),
+                          target: "_blank",
+                          class: "btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill shadow-sm" do %>
+                <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+                <span class="fw-semibold">Download Invoice</span>
+              <% end %>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+.fade-out {
+  animation: fadeOut 1s ease forwards;
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.pulse-btn {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+}
+</style>
