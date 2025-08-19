@@ -43,7 +43,7 @@ class PaymentsController < ApplicationController
 
     if payment.create
     approval_url = payment.links.find { |v| v.rel == "approval_url" }.href
-     redirect_to approval_url, allow_other_host: true
+       redirect_to approval_url, allow_other_host: true
     else
      redirect_to root_path, alert: "Error creating PayPal payment: #{payment.error.inspect}"
     end
