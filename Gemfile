@@ -30,7 +30,7 @@ gem "solid_cable"
 gem 'kaminari'
 gem 'paypal-sdk-rest'
 # Add Postgres:
-gem "pg", "~> 1.5"
+gem "pg", "~> 1.6"
 
 group :development do
   gem "letter_opener"    
